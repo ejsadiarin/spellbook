@@ -1,5 +1,7 @@
 # Spellbook
 
+- use zerolog, pgx, sqlc(?)
+
 - control center, like the notification system from solo leveling  
 - for "action-oriented" workflow/life
 - notifications: messages -> trigger events -> actions (so pubsub architecture?)
@@ -8,12 +10,15 @@
 
 # Problem to be solved:
 
+- [ ] mainly use ntfy for notifications
 - [ ] aggregate multiple "sources" that i want to track on (accept custom notifs from)
     - mangadex
     - some web scraping things
     - beszel data (from homelab)
-- [ ] integrate ntfy
 - [ ] integrate "universal" daily quests
+
+# TODOs
+connect to ntfy and stream messages via websockets
 
 # Backlog
 
