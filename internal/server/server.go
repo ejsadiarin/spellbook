@@ -18,7 +18,7 @@ type Server struct {
 }
 
 func New() *http.Server {
-	port, err := strconv.Atoi(os.Getenv("PORT"))
+	port, err := strconv.Atoi(os.Getenv("API_PORT"))
 	if err != nil {
 		log.Error().Err(err).Msg("cannot convert port to int")
 	}
