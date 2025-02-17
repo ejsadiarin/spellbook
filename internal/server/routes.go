@@ -14,15 +14,23 @@ import (
 func (s *Server) RegisterRoutes() http.Handler {
 	r := chi.NewRouter()
 
-	// middlewares
-	// r.Use()
+	// --- middlewares --- //
+
+	// automatic header "application/json"
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 
-	// register handlers here as long as it is in the same package "server",
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hehehehehehe test"))
+	// --- routes --- //
+
+	// ntfy := notification.NewNtfyClient("topic")
+	r.Route("/api", func(r chi.Router) {
+		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("hehehehehehe test"))
+		})
+		r.Get("/health", s.healthHandler)
+		// r.Get("/todo", s.todoHandler.GetTodos)
+		// r.Put("/todo", s.todoHandler.UpdateTodos)
+		// r.Get("/notification/stream", ntfy.SubscribeToNotifications)
 	})
-	r.Get("/health", s.healthHandler)
 
 	return r
 }
