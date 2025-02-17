@@ -11,6 +11,7 @@ services:
 
   spellbook_db:
     image: postgres:latest
+    container_name: spellbook_db
     environment:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USERNAME}

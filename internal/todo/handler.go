@@ -18,15 +18,6 @@ func NewTodoHandler(service *TodoService) *TodoHandler {
 	}
 }
 
-func (h *TodoHandler) RegisterRoutes(r chi.Router) {
-	r.Get("/todos", h.ListTodos)
-	r.Get("/todos/today", h.GetTodayTodo)
-	r.Put("/todos/today", h.UpdateTodayTodo)
-	r.Get("/todos/{filename}", h.GetTodo)
-	r.Put("/todos/{filename}", h.UpdateTodo)
-	r.Delete("/todos/{filename}", h.DeleteTodo)
-}
-
 func (h *TodoHandler) GetTodayTodo(w http.ResponseWriter, r *http.Request) {
 	todofile, err := h.service.GetTodayTodo()
 	if err != nil {
@@ -35,6 +26,16 @@ func (h *TodoHandler) GetTodayTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.NewEncoder(w).Encode(todofile)
+}
+
+func (h *TodoHandler) CreateTodayTodo(w http.ResponseWriter, r *http.Request) {
+	todofile, err := h.service.CreateTodayTodo()
+	if err != nil {
+		log.Error().Err(err).Str("todofile", todofile.Name).Msg("error creating todo for today")
+		http.Error(w, "Failed to create today's todo", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (h *TodoHandler) UpdateTodayTodo(w http.ResponseWriter, r *http.Request) {

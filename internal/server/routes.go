@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ejsadiarin/spellbook/internal/todo"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
 	"github.com/rs/zerolog/log"
 )
@@ -15,22 +17,44 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r := chi.NewRouter()
 
 	// --- middlewares --- //
-
-	// automatic header "application/json"
 	r.Use(render.SetContentType(render.ContentTypeJSON))
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	}))
 
 	// --- routes --- //
-
 	// ntfy := notification.NewNtfyClient("topic")
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("hehehehehehe test"))
 		})
 		r.Get("/health", s.healthHandler)
-		// r.Get("/todo", s.todoHandler.GetTodos)
-		// r.Put("/todo", s.todoHandler.UpdateTodos)
+		r.Mount("/todos", RegisterTodoRoutes())
 		// r.Get("/notification/stream", ntfy.SubscribeToNotifications)
 	})
+
+	return r
+}
+
+func RegisterTodoRoutes() chi.Router {
+	r := chi.NewRouter()
+	ts, err := todo.NewTodoService()
+	if err != nil {
+		log.Error().Err(err).Msg("error creating todo service")
+	}
+	th := todo.NewTodoHandler(ts)
+	r.Get("/", th.ListTodos)               // GET /todos
+	r.Post("/", th.CreateTodo)             // POST /todos
+	r.Get("/today", th.GetTodayTodo)       // GET /todos/today
+	r.Post("/today", th.CreateTodayTodo)   // POST /todos/today
+	r.Put("/today", th.UpdateTodayTodo)    // PUT /todos/today
+	r.Get("/{filename}", th.GetTodo)       // GET /todos/{filename}
+	r.Put("/{filename}", th.UpdateTodo)    // PUT /todos/{filename}
+	r.Delete("/{filename}", th.DeleteTodo) // DELETE /todos/{filename}
 
 	return r
 }
