@@ -102,6 +102,7 @@ func (ts *TodoService) ListTodos() ([]string, error) {
 			files = append(files, entry.Name())
 		}
 	}
+	log.Info().Msg("displaying todo files")
 	return files, nil
 }
 
