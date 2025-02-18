@@ -1,0 +1,40 @@
+{{ define "content" }}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">Todo Manager</h1>
+    
+    <!-- Today's Todo Section -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Today's Todo</h2>
+        <div id="today-todo">
+            <button
+                hx-get="/api/todos/today"
+                hx-target="#today-todo"
+                hx-swap="innerHTML"
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Load Today's Todo
+            </button>
+        </div>
+    </div>
+
+    <!-- Create New Todo -->
+    <div class="mb-6">
+        <button
+            hx-post="/api/todos/today"
+            hx-target="#todo-list"
+            hx-swap="beforeend"
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            Create Today's Todo
+        </button>
+    </div>
+
+    <!-- Todo List -->
+    <h2 class="text-2xl font-semibold mb-4">All Todos</h2>
+    <div id="todo-list" class="space-y-4">
+        {{ range .Todos }}
+        <div class="bg-white p-4 rounded-lg shadow" id="todo-{{ .Name }}">
+            <!-- ... rest of the todo item template ... -->
+        </div>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

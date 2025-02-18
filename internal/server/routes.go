@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"html/template"
 	"net/http"
 	"time"
 
@@ -16,10 +17,15 @@ import (
 func (s *Server) RegisterRoutes() http.Handler {
 	r := chi.NewRouter()
 
+	templates, err := template.ParseGlob("templates/*.html")
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to parse templates")
+	}
+
 	// --- middlewares --- //
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedOrigins:   []string{"http://localhost:3000", "http://localhost:3500"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true,
@@ -27,26 +33,34 @@ func (s *Server) RegisterRoutes() http.Handler {
 	}))
 
 	// --- routes --- //
+
+	// Static files
+	fileServer := http.FileServer(http.Dir("static"))
+	r.Handle("/static/*", http.StripPrefix("/static/", fileServer))
+
 	// ntfy := notification.NewNtfyClient("topic")
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("hehehehehehe test"))
 		})
 		r.Get("/health", s.healthHandler)
-		r.Mount("/todos", RegisterTodoRoutes())
+		r.Mount("/todos", RegisterTodoRoutes(templates))
 		// r.Get("/notification/stream", ntfy.SubscribeToNotifications)
+		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			templates.ExecuteTemplate(w, "layout.html", nil)
+		})
 	})
 
 	return r
 }
 
-func RegisterTodoRoutes() chi.Router {
+func RegisterTodoRoutes(templates *template.Template) chi.Router {
 	r := chi.NewRouter()
 	ts, err := todo.NewTodoService()
 	if err != nil {
 		log.Error().Err(err).Msg("error creating todo service")
 	}
-	th := todo.NewTodoHandler(ts)
+	th := todo.NewTodoHandler(ts, templates)
 	r.Get("/", th.ListTodos)               // GET /todos
 	r.Post("/", th.CreateTodo)             // POST /todos
 	r.Get("/today", th.GetTodayTodo)       // GET /todos/today
