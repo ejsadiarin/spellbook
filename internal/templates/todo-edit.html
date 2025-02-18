@@ -1,6 +1,9 @@
 {{ define "todo-edit" }}
 <div class="bg-white p-4 rounded-lg shadow" id="todo-{{ .Name }}">
-    <form hx-put="/api/todos/{{ .Name }}" hx-target="#todo-{{ .Name }}">
+    <form 
+        hx-put="/api/todos/{{ .Name }}" 
+        hx-target="#todo-{{ .Name }}" 
+        hx-swap="outerHTML">
         <div class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Content</label>

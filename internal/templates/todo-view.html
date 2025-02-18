@@ -7,6 +7,7 @@
                 hx-get="/api/todos/{{ .Name }}"
                 hx-target="#todo-{{ .Name }}"
                 hx-trigger="edit"
+                hx-swap="innerHTML"
                 class="text-blue-500 hover:text-blue-700">
                 Edit
             </button>

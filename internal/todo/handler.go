@@ -45,12 +45,18 @@ func NewTodoHandler(service *TodoService, templates *template.Template) *TodoHan
 }
 
 func (h *TodoHandler) GetTodayTodo(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GetTodayTodo triggered")
+	fmt.Println(r.Header)
 	todofile, err := h.service.GetTodayTodo()
 	if err != nil {
 		log.Error().Err(err).Str("todofile", todofile.Name).Msg("error getting todo for today")
 		http.Error(w, "Failed to get today's todo", http.StatusInternalServerError)
 		return
 	}
+	log.Info().
+		Str("filename", todofile.Name).
+		Str("trigger", r.Header.Get("HX-Trigger")).
+		Msg("GetTodayTodo called")
 
 	html, err := RenderMarkdown(todofile.Content)
 	if err != nil {
@@ -58,7 +64,12 @@ func (h *TodoHandler) GetTodayTodo(w http.ResponseWriter, r *http.Request) {
 	} else {
 		todofile.HTML = template.HTML(html)
 	}
-	fmt.Println(todofile.HTML)
+
+	if r.Header.Get("HX-Trigger") == "edit" {
+		fmt.Println("HX-Trigger edit activated in GetTodayTodo.")
+		h.render(w, r, "todo-edit", todofile)
+		return
+	}
 
 	// json.NewEncoder(w).Encode(todofile)
 	h.render(w, r, "todo-view", todofile)
@@ -137,7 +148,13 @@ func (h *TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GetTodo triggered")
+	fmt.Println(r.Header)
 	filename := chi.URLParam(r, "filename")
+	log.Info().
+		Str("filename", filename).
+		Str("trigger", r.Header.Get("HX-Trigger")).
+		Msg("GetTodo called")
 	todo, err := h.service.GetTodo(filename)
 	if err != nil {
 		log.Error().Err(err).Str("filename", filename).Msg("failed to get todo")
@@ -153,9 +170,16 @@ func (h *TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Header.Get("HX-Trigger") == "edit" {
+		fmt.Println("HX-Trigger edit activated.")
 		h.render(w, r, "todo-edit", todo)
 		return
 	}
+
+	// if r.Header.Get("HX-Trigger") == "edit" {
+	// 	fmt.Println("HX-Trigger edit activated.")
+	// 	h.render(w, r, "todo-edit", todo)
+	// 	return
+	// }
 
 	h.render(w, r, "todo-view", todo)
 }
