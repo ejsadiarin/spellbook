@@ -19,8 +19,12 @@
             </button>
         </div>
     </div>
-    <div class="mt-2">
-        <pre class="whitespace-pre-wrap">{{ .Content }}</pre>
+    <div class="max-w-none">
+        {{ if .HTML }}
+            {{ .HTML | safeHTML }}
+        {{ else }}
+            <pre class="whitespace-pre-wrap">{{ .Content }}</pre>
+        {{ end }}
     </div>
 </div>
 {{ end }}

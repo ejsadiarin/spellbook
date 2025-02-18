@@ -3,6 +3,7 @@ package todo
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"os"
 	"path/filepath"
 	"sync"
@@ -12,8 +13,9 @@ import (
 )
 
 type TodoFile struct {
-	Name    string `json:"name"`
-	Content string `json:"content"`
+	Name    string        `json:"name"`
+	Content string        `json:"content"`
+	HTML    template.HTML `json:"html,omitempty"`
 }
 
 type TodoService struct {
@@ -106,7 +108,7 @@ func (ts *TodoService) ListTodos() ([]string, error) {
 	return files, nil
 }
 
-// GetTodo reads and returns the content of a specific todo file
+// GetTodo reads and returns the information of a specific todo file
 func (ts *TodoService) GetTodo(filename string) (*TodoFile, error) {
 	ts.mu.RLock()
 	defer ts.mu.RUnlock()

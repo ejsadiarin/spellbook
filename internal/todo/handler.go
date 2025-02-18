@@ -2,6 +2,7 @@ package todo
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -17,10 +18,12 @@ type TodoHandler struct {
 
 func (h *TodoHandler) wantsJSON(r *http.Request) bool {
 	accept := r.Header.Get("Accept")
+	// return strings.Contains(accept, "application/json")
 	return strings.Contains(accept, "application/json") || strings.Contains(r.Header.Get("Hx-Request"), "true")
 }
 
 func (h *TodoHandler) render(w http.ResponseWriter, r *http.Request, template string, data interface{}) {
+	fmt.Println(r.Header)
 	if h.wantsJSON(r) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(data)
@@ -47,6 +50,15 @@ func (h *TodoHandler) GetTodayTodo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to get today's todo", http.StatusInternalServerError)
 		return
 	}
+
+	html, err := RenderMarkdown(todofile.Content)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to render markdown")
+	} else {
+		todofile.HTML = template.HTML(html)
+	}
+	fmt.Println(todofile.HTML)
+
 	// json.NewEncoder(w).Encode(todofile)
 	h.render(w, r, "todo-view.html", todofile)
 }
@@ -130,6 +142,13 @@ func (h *TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request) {
 		log.Error().Err(err).Str("filename", filename).Msg("failed to get todo")
 		http.Error(w, "Failed to get todo", http.StatusInternalServerError)
 		return
+	}
+
+	html, err := RenderMarkdown(todo.Content)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to render markdown")
+	} else {
+		todo.HTML = template.HTML(html)
 	}
 
 	if r.Header.Get("HX-Trigger") == "edit" {
