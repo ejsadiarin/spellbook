@@ -21,7 +21,7 @@
     </div>
     <div class="max-w-none">
         {{ if .HTML }}
-            {{ .HTML | safeHTML }}
+            {{ .HTML }}
         {{ else }}
             <pre class="whitespace-pre-wrap">{{ .Content }}</pre>
         {{ end }}

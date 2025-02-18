@@ -18,8 +18,8 @@ type TodoHandler struct {
 
 func (h *TodoHandler) wantsJSON(r *http.Request) bool {
 	accept := r.Header.Get("Accept")
-	// return strings.Contains(accept, "application/json")
-	return strings.Contains(accept, "application/json") || strings.Contains(r.Header.Get("Hx-Request"), "true")
+	return strings.Contains(accept, "application/json")
+	// return strings.Contains(accept, "application/json") || strings.Contains(r.Header.Get("Hx-Request"), "true")
 }
 
 func (h *TodoHandler) render(w http.ResponseWriter, r *http.Request, template string, data interface{}) {
@@ -30,6 +30,7 @@ func (h *TodoHandler) render(w http.ResponseWriter, r *http.Request, template st
 		return
 	}
 
+	// w.Header().Set("Content-Type", "text/html")
 	if err := h.templates.ExecuteTemplate(w, template, data); err != nil {
 		log.Error().Err(err).Msg("error rendering template")
 		http.Error(w, "Error rendering page", http.StatusInternalServerError)
@@ -60,7 +61,7 @@ func (h *TodoHandler) GetTodayTodo(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(todofile.HTML)
 
 	// json.NewEncoder(w).Encode(todofile)
-	h.render(w, r, "todo-view.html", todofile)
+	h.render(w, r, "todo-view", todofile)
 }
 
 func (h *TodoHandler) CreateTodayTodo(w http.ResponseWriter, r *http.Request) {
@@ -73,7 +74,7 @@ func (h *TodoHandler) CreateTodayTodo(w http.ResponseWriter, r *http.Request) {
 
 	// for HTMX requests, render new todo view
 	if r.Header.Get("Hx-Request") == "true" {
-		h.render(w, r, "todo-view.html", todofile)
+		h.render(w, r, "todo-view", todofile)
 		return
 	}
 
@@ -112,7 +113,7 @@ func (h *TodoHandler) UpdateTodayTodo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	todo, _ := h.service.GetTodo(filename)
-	h.render(w, r, "todo-view.html", todo)
+	h.render(w, r, "todo-view", todo)
 }
 
 func (h *TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
@@ -130,7 +131,7 @@ func (h *TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	h.render(w, r, "todos.html", map[string]interface{}{
+	h.render(w, r, "todos", map[string]interface{}{
 		"Todos": todos,
 	})
 }
@@ -152,11 +153,11 @@ func (h *TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Header.Get("HX-Trigger") == "edit" {
-		h.render(w, r, "todo-edit.html", todo)
+		h.render(w, r, "todo-edit", todo)
 		return
 	}
 
-	h.render(w, r, "todo-view.html", todo)
+	h.render(w, r, "todo-view", todo)
 }
 
 func (h *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
@@ -192,7 +193,7 @@ func (h *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	todo, _ := h.service.GetTodo(name)
-	h.render(w, r, "todo-view.html", todo)
+	h.render(w, r, "todo-view", todo)
 }
 
 func (h *TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request) {
@@ -227,7 +228,7 @@ func (h *TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	todo, _ := h.service.GetTodo(filename)
-	h.render(w, r, "todo-view.html", todo)
+	h.render(w, r, "todo-view", todo)
 }
 
 func (h *TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request) {
