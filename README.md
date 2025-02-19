@@ -6,6 +6,8 @@
 
 - for "action-oriented" workflow/life
 
+- custom ecosystem of my projects
+
 # Technology
 
 - use zerolog, pgx, sqlc(?)
@@ -22,9 +24,9 @@
     - [ ] be able to send and receive notifications (from/to a ntfy endpoint) as a client
 
 
-# Problem to be solved:
+# Features
 
-- [ ] mainly use ntfy for notifications
+- [ ] pubsub notifications to ntfy
 
 - [ ] aggregate multiple "sources" that i want to track on (accept custom notifs from)
     - mangadex
@@ -34,3 +36,9 @@
 - [ ] integrate "universal" daily quests
     - [ ] integrate markdown parsing for todos
         - add notifications for daily quests that are not yet completed (not yet checked with [x])
+
+- [ ] GUI for custom kubernetes operator controller API
+    - ability to control and configure kubernetes homelab via custom operator
+
+- [ ] spellbook agents for monitoring system information on local and remote hosts
+    - like beszel/glance agents (see their repos like glance pkg sysinfo)
