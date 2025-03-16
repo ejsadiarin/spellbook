@@ -31,7 +31,8 @@ func Connect() *pgxpool.Pool {
 		log.Fatal().Err(err).Msg("cannot establish database connection")
 	}
 
-	dbpool.Exec(ctx, `
+	q := New(dbpool)
+	q.db.Exec(ctx, `
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             username VARCHAR(50) UNIQUE NOT NULL,
