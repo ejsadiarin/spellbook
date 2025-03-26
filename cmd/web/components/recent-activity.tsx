@@ -1,21 +1,21 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
+import { Activity } from "lucide-react"
 
 interface RecentActivityProps {
     className?: string
 }
 
 export async function RecentActivity({ className }: RecentActivityProps) {
-    // TODO: In a real app, you would fetch this data from your Go API
-    // Example: const activities = await fetch('/api/activities').then(res => res.json())
+    // In a real app, you would fetch this data from your Go API
 
     const activities = [
         {
             user: {
-                name: "Alex Johnson",
+                name: "You",
                 avatar: "/placeholder.svg?height=32&width=32",
-                initials: "AJ",
+                initials: "YO",
             },
             action: "deployed",
             target: "api-service",
@@ -23,58 +23,61 @@ export async function RecentActivity({ className }: RecentActivityProps) {
         },
         {
             user: {
-                name: "Sarah Chen",
+                name: "System",
                 avatar: "/placeholder.svg?height=32&width=32",
-                initials: "SC",
+                initials: "SY",
             },
-            action: "created",
-            target: "new-project",
+            action: "scaled",
+            target: "web-cluster",
             time: "1 hour ago",
         },
         {
             user: {
-                name: "Miguel Rodriguez",
+                name: "You",
                 avatar: "/placeholder.svg?height=32&width=32",
-                initials: "MR",
+                initials: "YO",
             },
-            action: "updated",
-            target: "auth-service",
+            action: "created",
+            target: "new-task",
             time: "3 hours ago",
         },
         {
             user: {
-                name: "Emma Wilson",
+                name: "System",
                 avatar: "/placeholder.svg?height=32&width=32",
-                initials: "EW",
+                initials: "SY",
             },
-            action: "merged",
-            target: "feature-branch",
+            action: "updated",
+            target: "monitoring-config",
             time: "5 hours ago",
         },
         {
             user: {
-                name: "David Kim",
+                name: "You",
                 avatar: "/placeholder.svg?height=32&width=32",
-                initials: "DK",
+                initials: "YO",
             },
-            action: "scaled",
-            target: "web-service",
+            action: "restarted",
+            target: "database-container",
             time: "yesterday",
         },
     ]
 
     return (
-        <Card className={cn("col-span-1", className)}>
+        <Card className={cn("futuristic-card", className)}>
             <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                    <Activity className="h-5 w-5 text-purple-400" />
+                    Recent Activity
+                </CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
                     {activities.map((activity, index) => (
                         <div key={index} className="flex items-center gap-4">
-                            <Avatar className="h-8 w-8">
+                            <Avatar className="h-8 w-8 border border-white/10">
                                 <AvatarImage src={activity.user.avatar} alt={activity.user.name} />
-                                <AvatarFallback>{activity.user.initials}</AvatarFallback>
+                                <AvatarFallback className="bg-purple-900/50 text-purple-200">{activity.user.initials}</AvatarFallback>
                             </Avatar>
                             <div className="space-y-1">
                                 <p className="text-sm font-medium leading-none">

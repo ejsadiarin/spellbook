@@ -1,12 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export const darkMode = ["class"];
-export const content = [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
-    "*.{js,ts,jsx,tsx,mdx}",
-];
+export const content = ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "*.{js,ts,jsx,tsx,mdx}"];
 export const theme = {
     container: {
         center: true,
@@ -65,10 +59,23 @@ export const theme = {
                 from: { height: "var(--radix-accordion-content-height)" },
                 to: { height: 0 },
             },
+            "pulse-glow": {
+                "0%, 100%": { opacity: 1 },
+                "50%": { opacity: 0.6 },
+            },
+            float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+            },
         },
         animation: {
             "accordion-down": "accordion-down 0.2s ease-out",
             "accordion-up": "accordion-up 0.2s ease-out",
+            "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+            float: "float 6s ease-in-out infinite",
+        },
+        backgroundImage: {
+            "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         },
     },
 };

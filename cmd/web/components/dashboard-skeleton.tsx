@@ -14,6 +14,7 @@ export function DashboardSkeleton() {
                 <Skeleton className="h-[400px] md:col-span-1 lg:col-span-4" />
                 <Skeleton className="h-[400px] md:col-span-1 lg:col-span-3" />
             </div>
+            <Skeleton className="h-[200px] w-full" />
         </div>
     )
 }

@@ -1,39 +1,37 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "@/app/globals.css";
-import { Inter } from "next/font/google"
-import { ThemeProvider } from "@/components/theme-provider";
+import type React from "react"
+import "./globals.css"
+import type { Metadata } from "next"
+import { Inter, Space_Grotesk } from "next/font/google"
+import { ThemeProvider } from "@/components/theme-provider"
 
-const inter = Inter({ subsets: ["latin"] })
-
-const geistSans = Geist({
-    variable: "--font-geist-sans",
+const inter = Inter({
     subsets: ["latin"],
-});
+    variable: "--font-inter",
+})
 
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
+const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
-});
+    variable: "--font-space",
+})
 
 export const metadata: Metadata = {
-    title: "Spellbook IDP",
-    description: "Dashboard for Spellbook",
-};
+    title: "Spellbook - Developer Platform",
+    description: "Your personal internal developer platform",
+}
 
 export default function RootLayout({
     children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+}: {
+    children: React.ReactNode
+}) {
     return (
-        <html lang="en" suppressHydrationWarning>
-            <body className={inter.className}>
-                {/* <body */}
-                {/*     className={`${geistSans.variable} ${geistMono.variable} antialiased`} */}
-                {/* > */}
-                <ThemeProvider defaultTheme="dark">{children}</ThemeProvider>
+        <html lang="en" suppressHydrationWarning className="dark">
+            <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans`}>
+                <ThemeProvider defaultTheme="dark" storageKey="spellbook-theme">
+                    {children}
+                </ThemeProvider>
             </body>
         </html>
-    );
+    )
 }
+
